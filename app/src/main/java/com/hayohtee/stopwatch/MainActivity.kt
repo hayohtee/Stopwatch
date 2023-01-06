@@ -2,10 +2,56 @@ package com.hayohtee.stopwatch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.SystemClock
+import android.widget.Button
+import android.widget.Chronometer
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var stopwatch: Chronometer
+    var running = false
+    var offset: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        stopwatch = findViewById(R.id.stopwatch)
+
+        // Starts the stopwatch if it's not running
+        val startButton = findViewById<Button>(R.id.start_button)
+        startButton.setOnClickListener {
+            if (!running) {
+                setBaseTime()
+                stopwatch.start()
+                running = true
+            }
+        }
+
+        // Pauses the stopwatch if it's running
+        val pauseButton = findViewById<Button>(R.id.pause_button)
+        pauseButton.setOnClickListener {
+            if (running) {
+                saveOffset()
+                stopwatch.stop()
+                running = false
+            }
+        }
+
+        // Sets the offset and stopwatch to 0
+        val resetButton = findViewById<Button>(R.id.reset_button)
+        resetButton.setOnClickListener {
+            offset = 0
+            setBaseTime()
+        }
+    }
+
+    // Update the stopwatch.base time, allowing for any offset
+    private fun setBaseTime() {
+        stopwatch.base = SystemClock.elapsedRealtime() - offset
+    }
+
+    // Record the offset
+    private fun saveOffset() {
+        offset = SystemClock.elapsedRealtime() - stopwatch.base
     }
 }
