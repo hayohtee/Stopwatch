@@ -12,9 +12,9 @@ class MainActivity : AppCompatActivity() {
     var offset: Long = 0
 
     // Key strings for use with the bundle
-    val OFFSET_KEY = "offset"
-    val RUNNING_KEY = "running"
-    val BASE_KEY = "base"
+    private val OFFSET_KEY = "offset"
+    private val RUNNING_KEY = "running"
+    private val BASE_KEY = "base"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +60,25 @@ class MainActivity : AppCompatActivity() {
         resetButton.setOnClickListener {
             offset = 0
             setBaseTime()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (running) {
+            saveOffset()
+            stopwatch.stop()
+        }
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+
+        if (running) {
+            setBaseTime()
+            stopwatch.start()
+            offset = 0
         }
     }
 
